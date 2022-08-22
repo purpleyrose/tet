@@ -92,8 +92,8 @@ impl Editor {
             self.draw_status_bar();
             self.draw_message_bar();
             Terminal::cursor_position(&Position { 
-                x: self.cursor_position.x.saturating_sub(self.offset.y), 
-                y: self.cursor_position.y.saturating_sub(self.offset.x) 
+                x: self.cursor_position.x.saturating_sub(self.offset.x), 
+                y: self.cursor_position.y.saturating_sub(self.offset.y) 
             });
         }
         Terminal::cursor_show();
@@ -115,19 +115,20 @@ impl Editor {
             self.status_message = StatusMessage::from("Error writing file!".to_string());
         }
     } 
+ 
     fn process_keypress(&mut self) -> Result<(), std::io::Error> {
         let pressed_key = Terminal::read_key()?;
         match pressed_key {
             Key::Ctrl('q') => {
                 if self.quit_times > 0 && self.document.is_dirty() {
                     self.status_message = StatusMessage::from(format!(
-                        "WARNING: File has unsaved changes.\n{} more times to quit.",
+                        "WARNING! File has unsaved changes. Press Ctrl-Q {} more times to quit.",
                         self.quit_times
                     ));
                     self.quit_times -= 1;
                     return Ok(());
                 }
-                self.should_quit = true;
+                self.should_quit = true
             }
             Key::Ctrl('s') => self.save(),
             Key::Char(c) => {
@@ -136,7 +137,7 @@ impl Editor {
             }
             Key::Delete => self.document.delete(&self.cursor_position),
             Key::Backspace => {
-                if self.cursor_position.x > 0 {
+                if self.cursor_position.x > 0 || self.cursor_position.y > 0 {
                     self.move_cursor(Key::Left);
                     self.document.delete(&self.cursor_position);
                 }
@@ -183,7 +184,6 @@ impl Editor {
         } else {
             0
         };
-        
         match key {
             Key::Up => y = y.saturating_sub(1),
             Key::Down => {
@@ -195,7 +195,7 @@ impl Editor {
                 if x > 0 {
                     x -= 1;
                 } else if y > 0 {
-                    y-= 1;
+                    y -= 1;
                     if let Some(row) = self.document.row(y) {
                         x = row.len();
                     } else {
@@ -205,31 +205,31 @@ impl Editor {
             }
             Key::Right => {
                 if x < width {
-                    x+= 1;
+                    x += 1;
                 } else if y < height {
                     y += 1;
                     x = 0;
                 }
-            },  
+            }
             Key::PageUp => {
-                y = if y > terminal_height  {
+                y = if y > terminal_height {
                     y.saturating_sub(terminal_height)
                 } else {
                     0
                 }
-            },
+            }
             Key::PageDown => {
                 y = if y.saturating_add(terminal_height) < height {
                     y.saturating_add(terminal_height)
                 } else {
                     height
                 }
-            },
+            }
             Key::Home => x = 0,
             Key::End => x = width,
             _ => (),
         }
-       width = if let Some(row) = self.document.row(y) {
+        width = if let Some(row) = self.document.row(y) {
             row.len()
         } else {
             0
@@ -237,9 +237,9 @@ impl Editor {
         if x > width {
             x = width;
         }
-        self.cursor_position = Position { x, y };
-           
-       }
+
+        self.cursor_position = Position { x, y }
+    }
     fn draw_welcome_message(&self) {
         let mut welcome_message = format!("Tet Editor -- Version {}", VERSION);
         let width = self.terminal.size().width as usize;
@@ -268,7 +268,7 @@ impl Editor {
                 .document
                 .row(self.offset.y.saturating_add(terminal_row as usize)){
                     self.draw_row(row);
-                } else if self.document.is_empty() && terminal_row == height / 3{
+                } else if self.document.is_empty() && terminal_row == height / 3 {
             
                 self.draw_welcome_message();
             }
@@ -346,8 +346,8 @@ impl Editor {
         }
         Ok(Some(result))
     }
-}   
-  
+   
+}
 
 
 
