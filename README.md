@@ -2,7 +2,6 @@
 
 A simple text editor for the Terminal.
 
-<<<<<<< HEAD
 Keybinds currently are Ctrl-Q to quit, and Ctrl-S to save the file that you are writing to.
 
 ## TODO
@@ -22,4 +21,4 @@ Keybinds currently are Ctrl-Q to quit, and Ctrl-S to save the file that you are 
 - (Future) Impliment a way to have multiple files open at the same time.
 =======
 A simple text editor for the Terminal
->>>>>>> d15806e41aae9935f4a85b11629a465358d0701c
+
