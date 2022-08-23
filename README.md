@@ -6,16 +6,16 @@ Keybinds currently are Ctrl-Q to quit, and Ctrl-S to save the file that you are 
 
 ## TODO
 
-* Seperate structure of the program, and make the program rely less on editor.rs
+- Seperate structure of the program, and make the program rely less on editor.rs
 
-* Add Syntax highlighting for the Rust programing language
+- Add Syntax highlighting for the Rust programing language
   
-* Impliment a search function
+- Impliment a search function
   
-* Add a way to save the file to a specific location
+- Add a way to save the file to a specific location
   
-* Add more keybinds, such as delete a whole line, and delete a word, or multiple words
+- Add more keybinds, such as delete a whole line, and delete a word, or multiple words
 
-* (Future) Impliment an LSP server, most likely for the Rust language.
+- (Future) Impliment an LSP server, most likely for the Rust language.
 
-* (Future) Impliment a way to have multiple files open at the same time.
+- (Future) Impliment a way to have multiple files open at the same time.
