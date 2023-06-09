@@ -40,38 +40,33 @@ impl Document {
         self.dirty
     }
 
-    pub fn insert(&mut self, at: &Position, char: char) {
-        if at.y > self.rows.len() {
-            return;
-        }
-        self.dirty = true;
-        self.dirty = true;
+    pub fn insert(&mut self, at: &Position, c:char) {
         
-        if char == '\n' {
+        if c == '\n' {
             self.insert_newline(at);
             return;
         }
-        if at.y == self.rows.len() {
+        
+        if at.y == self.len() {
             let mut row = Row::default();
-            row.insert(0, char);
+            row.insert(0,c);
             self.rows.push(row);
-        } else {
-           #[allow(clippy::indexing_slicing)]
-           let row = &mut self.rows[at.y];
-            row.insert(at.x, char);
+        } else if at.y < self.len(){
+            let row = self.rows.get_mut(at.y).unwrap();
+            row.insert(at.x, c);
         }
     }
     pub fn insert_newline(&mut self, at: &Position) {
-        if at.y > self.rows.len() {
+        if at.y > self.len() {
             return;
         }
         if at.y == self.rows.len() {
-        self.rows.push(Row::default());
-        return;
+            self.rows.push(Row::default());
+            return;
        }
        self.dirty = true;
        #[allow(clippy::indexing_slicing)]
-       let new_row = self.rows[at.y].split(at.x);
+       let new_row = self.rows.get_mut(at.y).unwrap().split(at.x);
        #[allow(clippy::integer_arithmetic)]
        self.rows.insert(at.y + 1, new_row);
     }

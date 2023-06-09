@@ -35,26 +35,20 @@ impl Row {
         }
         result
     }
-    pub fn insert(&mut self, at: usize, char: char) {
+    fn update_len(&mut self) {
+        self.len = self.string[..].graphemes(true).count();
+    }
+    pub fn insert(&mut self, at: usize, c:char) {
         if at >= self.len() {
-            self.string.push(char);
-            
+            self.string.push(c);
         } else {
-            self.len += 1;
-            return; 
+            let mut result: String = self.string[..].graphemes(true).take(at).collect();
+            let remainder: String = self.string[..].graphemes(true).skip(at).collect();
+            result.push(c);
+            result.push_str(&remainder);
+            self.string = result;
         }
-        let mut result= String::new();
-        let mut length = 0;
-        for (index, grapheme) in self.string[..].graphemes(true).enumerate(){
-            length += 1;
-            if index == at {
-                length += 1;
-                result.push(char);
-            }
-            result.push_str(grapheme);
-        }
-        self.len = length;
-        self.string = result;
+        self.update_len();
     }
     pub fn delete(&mut self, at:usize) {
         if at >= self.len() {

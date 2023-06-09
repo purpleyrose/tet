@@ -101,16 +101,18 @@ impl Editor {
     }
     fn save(&mut self) {
         if self.document.file_name.is_none() {
-            let new_name = self.prompt("Save as: ").unwrap_or(None);
-                if new_name.is_none() {
-                    self.status_message = StatusMessage::from("Save aborted.".to_string());
-                    return;
+            let new_name = self.prompt("Save as:").unwrap_or(None);
+            if new_name.is_none() {
+                self.status_message = StatusMessage::from("Save aborted".to_string());
+                return;
             }
             self.document.file_name = new_name;
         }
 
+
         if self.document.save().is_ok() {
             self.status_message = StatusMessage::from("File saved successfully.".to_string());
+
         } else {
             self.status_message = StatusMessage::from("Error writing file!".to_string());
         }
@@ -320,33 +322,27 @@ impl Editor {
     }
     fn prompt(&mut self, prompt: &str) -> Result<Option<String>, std::io::Error> {
         let mut result = String::new();
+
         loop {
-            self.status_message = StatusMessage::from(format!("{}{}", prompt, result));
+            self.status_message = StatusMessage::from(format!("{}{}",prompt, result));
             self.refresh_screen()?;
-            match Terminal::read_key()? {
+            let key = Terminal::read_key()?;
+            match key {
                 Key::Backspace => result.truncate(result.len().saturating_sub(1)),
-                
-            
-                Key::Char('\n') => break,
-                Key::Char(char) => {
-                    if !char.is_control() {
-                        result.push(char);
-                    }
-                }
+                Key::Char('\n') => break Ok(Some(result)),
                 Key::Esc => {
                     result.truncate(0);
-                    break;
+                    break Ok(Some(result));
                 }
-                _ => (),
+                _ => ()
             }
-        }
         self.status_message = StatusMessage::from(String::new());
         if result.is_empty() {
             return Ok(None);
+            }
+            return Ok(Some(result));
         }
-        Ok(Some(result))
     }
-   
 }
 
 
